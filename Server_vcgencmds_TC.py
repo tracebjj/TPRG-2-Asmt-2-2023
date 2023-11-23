@@ -21,10 +21,17 @@ t = os.popen('vcgencmd measure_volts ain1').readline() #gets from the os, using 
 spd = os.popen('vcgencmd measure_clock core').readline() #gets from the os, using vcgencmd - the GPU core speed
 #gets the HDMI clock
 HDMIclk = os.popen('vcgencmd measure_clock hdmi').readline()
-
+#measures RAM I/O Voltage
+RAMIOV = os.popen('vcgencmd measure_volts sdram_i').readline()
+#measures SD card interface speed
+SDCLKSPD = os.popen('vcgencmd measure_clock emmc').readline()
 
 # initialising json object string
-ini_string = """{"Temperature": t, "Speed": spd}"""
+ini_string = """{"Temperature": t,
+"GPU Core Speed": spd,
+"HDMI Speed": HDMIclk,
+"RAM I/O Voltage": RAMIOV,
+"SD Card Interface Speed": SDCLKSPD}"""
 # converting string to json
 f_dict = eval(ini_string) # The eval() function evaluates JavaScript code represented as a string and returns its completion value.
 
