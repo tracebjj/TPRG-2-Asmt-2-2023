@@ -9,7 +9,7 @@ import os, time
 import json
 
 s = socket.socket()
-host = '' # Localhost
+host = '0.0.0.0' # Localhost
 port = 5000
 s.bind((host, port))
 s.listen(5)
@@ -17,16 +17,22 @@ s.listen(5)
 
 #gets the Core Temperature from Pi, ref https://github.com/nicmcd/vcgencmd/blob/master/README.md
 t = os.popen('vcgencmd measure_volts ain1').readline() #gets from the os, using vcgencmd - the core-temperature
+#gets the GPU core speed
+spd = os.popen('vcgencmd measure_clock core').readline() #gets from the os, using vcgencmd - the GPU core speed
+#gets the HDMI clock
+HDMIclk = os.popen('vcgencmd measure_clock hdmi').readline()
+
+
 # initialising json object string
-ini_string = """{"Temperature": t}"""
+ini_string = """{"Temperature": t, "Speed": spd}"""
 # converting string to json
 f_dict = eval(ini_string) # The eval() function evaluates JavaScript code represented as a string and returns its completion value.
 
 
 
 while True:
-  c, addr = s.accept()
-  print ('Got connection from',addr)
-  res = bytes(str(f_dict), 'utf-8') # needs to be a byte
-  c.send(res) # sends data as a byte type
-  c.close()
+    c, addr = s.accept()
+    print ('Got connection from',addr)
+    res = bytes(str(f_dict), 'utf-8') # needs to be a byte
+    c.send(res) # sends data as a byte type
+    c.close()
